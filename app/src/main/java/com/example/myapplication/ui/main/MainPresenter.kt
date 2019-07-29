@@ -4,17 +4,18 @@ import com.example.myapplication.services.GithubService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MainPresenter : MainContract.Presenter {
+class MainPresenter @Inject constructor(
+        private val githubService: GithubService
+) : MainContract.Presenter {
 
     private val TEST_USER: String = "JakeWharton"
     private var view: MainContract.View? = null
-    private lateinit var githubService: GithubService
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun attachView(view: MainContract.View) {
         this.view = view
-        githubService = GithubService()
     }
 
     override fun detachView() {

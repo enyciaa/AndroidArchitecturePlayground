@@ -1,5 +1,5 @@
 package com.example.myapplication.ui.base
 
-import androidx.appcompat.app.AppCompatActivity
+import dagger.android.support.DaggerAppCompatActivity
 
-abstract class BaseActivity : AppCompatActivity()
+abstract class BaseActivity : DaggerAppCompatActivity()

@@ -1,8 +1,9 @@
 package com.example.myapplication.ui.details
 
 import com.example.myapplication.services.GithubRepoEntity
+import javax.inject.Inject
 
-class DetailsPresenter : DetailsContract.Presenter {
+class DetailsPresenter @Inject constructor() : DetailsContract.Presenter {
 
     private var view: DetailsContract.View? = null
     private lateinit var githubRepoEntity: GithubRepoEntity

@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_details.*
 import android.net.Uri
 import com.example.myapplication.R
 import com.example.myapplication.extensions.startActivity
+import javax.inject.Inject
 
 class DetailsActivity : BaseActivity(),
                         DetailsContract.View {
@@ -24,15 +25,12 @@ class DetailsActivity : BaseActivity(),
         }
     }
 
-    private lateinit var detailsPresenter: DetailsPresenter
+    @Inject lateinit var detailsPresenter: DetailsPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-
-        detailsPresenter = DetailsPresenter()
         detailsPresenter.attachView(this)
-
         val githubRepoEntity = intent.getParcelableExtra<GithubRepoEntity>(REPOSITORY_KEY)
         detailsPresenter.initData(githubRepoEntity)
         a_details_btn.setOnClickListener { detailsPresenter.onGoToRepositoryClicked() }

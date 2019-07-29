@@ -9,13 +9,15 @@ import com.example.myapplication.R
 import com.example.myapplication.services.GithubRepoEntity
 import com.example.myapplication.ui.details.DetailsActivity
 import com.example.myapplication.extensions.startActivity
+import com.example.myapplication.services.GithubService
 import com.example.myapplication.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 class MainActivity : BaseActivity(),
                      MainContract.View {
 
-    private lateinit var mainPresenter: MainPresenter
+    @Inject lateinit var mainPresenter: MainPresenter
 
     private var mainAdapter: MainAdapter? = null
 
@@ -23,7 +25,6 @@ class MainActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initViews()
-        mainPresenter = MainPresenter()
         mainPresenter.attachView(this)
         a_main_btn.setOnClickListener { mainPresenter.loadResults() }
     }
