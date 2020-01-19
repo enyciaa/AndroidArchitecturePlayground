@@ -9,4 +9,9 @@ The apps is built in Kotlin and architected with a simple version of MVP. It als
 
 #### Simple dependency injection 
 [Link to snapshot](https://github.com/enyciaa/AndroidArchitecturePlayground/tree/1.1.0)  
-Adds a basic form of dependency injection with dagger. By basic, I mean DI is only used for object creation - fancy features arn't included,.
+Adds a basic form of dependency injection with dagger. By basic, I mean DI is only used for object creation - fancy features arn't included.
+
+
+#### Converting MVP to MVVM 
+[Link to snapshot](https://github.com/enyciaa/AndroidArchitecturePlayground/tree/1.1.0)  
+Converts the MVP pattern into a basic version of MVVM.

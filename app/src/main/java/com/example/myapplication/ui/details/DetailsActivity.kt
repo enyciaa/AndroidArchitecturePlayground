@@ -8,12 +8,14 @@ import com.example.myapplication.services.GithubRepoEntity
 import com.example.myapplication.ui.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_details.*
 import android.net.Uri
+import android.view.View
 import com.example.myapplication.R
 import com.example.myapplication.extensions.startActivity
+import com.example.myapplication.ui.base.LifecycleReceiver
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class DetailsActivity : BaseActivity(),
-                        DetailsContract.View {
+class DetailsActivity : BaseActivity() {
 
     companion object {
         const val REPOSITORY_KEY = "REPOSITORY_KEY"
@@ -25,35 +27,30 @@ class DetailsActivity : BaseActivity(),
         }
     }
 
-    @Inject lateinit var detailsPresenter: DetailsPresenter
+    @Inject lateinit var detailsViewModel: DetailsViewModel
+
+    override fun getLifecycleReceivers(): List<LifecycleReceiver> {
+        return listOf(detailsViewModel)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
-        detailsPresenter.attachView(this)
         val githubRepoEntity = intent.getParcelableExtra<GithubRepoEntity>(REPOSITORY_KEY)
-        detailsPresenter.initData(githubRepoEntity)
-        a_details_btn.setOnClickListener { detailsPresenter.onGoToRepositoryClicked() }
+        detailsViewModel.initData(githubRepoEntity)
+        a_details_btn.setOnClickListener { detailsViewModel.onGoToRepositoryClicked() }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        detailsPresenter.detachView()
-    }
+    override fun onStart() {
+        super.onStart()
+        val disposable = detailsViewModel.viewStateEmitter.subscribe {
+            if (it.urlAddressToGoTo.isNotBlank()) {
+                Intent(Intent.ACTION_VIEW, Uri.parse(it.urlAddressToGoTo)).startActivity(this)
+            }
 
-    override fun setToolbarTitle(title: String) {
-        supportActionBar?.title = title
-    }
-
-    override fun setUrlAddress(url: String) {
-        a_details_txt.text = url
-    }
-
-    override fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
-    }
-
-    override fun startUrl(url: String) {
-        Intent(Intent.ACTION_VIEW, Uri.parse(url)).startActivity(this)
+            supportActionBar?.title = it.toolbarTitle
+            a_details_txt.text = it.urlAddress
+        }
+        compositeDisposable.add(disposable)
     }
 }

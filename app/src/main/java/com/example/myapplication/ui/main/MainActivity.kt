@@ -9,24 +9,26 @@ import com.example.myapplication.R
 import com.example.myapplication.services.GithubRepoEntity
 import com.example.myapplication.ui.details.DetailsActivity
 import com.example.myapplication.extensions.startActivity
-import com.example.myapplication.services.GithubService
 import com.example.myapplication.ui.base.BaseActivity
+import com.example.myapplication.ui.base.LifecycleReceiver
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(),
-                     MainContract.View {
+class MainActivity : BaseActivity() {
 
-    @Inject lateinit var mainPresenter: MainPresenter
+    @Inject lateinit var mainViewModel: MainViewModel
 
     private var mainAdapter: MainAdapter? = null
+
+    override fun getLifecycleReceivers(): List<LifecycleReceiver> {
+        return listOf(mainViewModel)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initViews()
-        mainPresenter.attachView(this)
-        a_main_btn.setOnClickListener { mainPresenter.loadResults() }
+        a_main_btn.setOnClickListener { mainViewModel.loadResults() }
     }
 
     private fun initViews() {
@@ -38,25 +40,20 @@ class MainActivity : BaseActivity(),
         )
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mainPresenter.detachView()
-    }
-
-    override fun showError(error: String) {
-        Toast.makeText(this, error, Toast.LENGTH_LONG).show()
-    }
-
-    override fun showResults(results: List<GithubRepoEntity>) {
-        mainAdapter?.addAll(results)
-    }
-
-    override fun showProgress() {
-        a_main_progress.visibility = View.VISIBLE
-    }
-
-    override fun hideProgress() {
-        a_main_progress.visibility = View.INVISIBLE
+    override fun onStart() {
+        super.onStart()
+        val disposable = mainViewModel.viewStateEmitter.subscribe {
+            if (it.loadingIsVisible) {
+                a_main_progress.visibility = View.VISIBLE
+            } else {
+                a_main_progress.visibility = View.INVISIBLE
+            }
+            mainAdapter?.addAll(it.results)
+            if (it.error.isNotBlank()) {
+                Toast.makeText(this, it.error, Toast.LENGTH_LONG).show()
+            }
+        }
+        compositeDisposable.add(disposable)
     }
 
     private fun startDetailActivity(it: GithubRepoEntity) {
