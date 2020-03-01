@@ -1,11 +1,16 @@
 package com.example.myapplication.ui.details
 
+import com.example.myapplication.di.SingleActivity
 import com.example.myapplication.services.GithubRepoEntity
+import com.example.myapplication.domain.Navigator
 import com.example.myapplication.ui.base.BaseViewModel
 import com.example.myapplication.ui.base.BaseViewState
 import javax.inject.Inject
 
-class DetailsViewModel @Inject constructor() : BaseViewModel<DetailsViewModel.ViewState>() {
+@SingleActivity
+class DetailsViewModel @Inject constructor(
+        private val navigator: Navigator
+) : BaseViewModel<DetailsViewModel.ViewState>() {
 
     override var lastViewState: ViewState = ViewState()
     private lateinit var githubRepoEntity: GithubRepoEntity
@@ -19,12 +24,11 @@ class DetailsViewModel @Inject constructor() : BaseViewModel<DetailsViewModel.Vi
     }
 
     fun onGoToRepositoryClicked() {
-        emit(lastViewState.copy(urlAddressToGoTo = githubRepoEntity.url))
+        navigator.goToUrl(githubRepoEntity.url)
     }
 
     data class ViewState(
             val toolbarTitle: String = "",
-            val urlAddress: String = "",
-            val urlAddressToGoTo: String = ""
+            val urlAddress: String = ""
     ) : BaseViewState
 }

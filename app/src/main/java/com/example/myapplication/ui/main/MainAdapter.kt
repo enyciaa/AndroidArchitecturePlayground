@@ -22,7 +22,7 @@ class MainAdapter(
             parent: ViewGroup,
             viewType: Int
     ): ViewHolder {
-        val layoutInflater: LayoutInflater = LayoutInflater.from(parent?.context)
+        val layoutInflater: LayoutInflater = LayoutInflater.from(parent.context)
         val view: View = layoutInflater.inflate(R.layout.recycler_row, parent, false)
         return ViewHolder(view)
     }

@@ -1,9 +1,9 @@
 package com.example.myapplication.ui.base
 
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.android.support.DaggerFragment
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class BaseActivity : DaggerAppCompatActivity() {
+abstract class BaseFragment : DaggerFragment() {
 
     var compositeDisposable: CompositeDisposable = CompositeDisposable()
 
